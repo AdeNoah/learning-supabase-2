@@ -104,7 +104,11 @@ const TaskManager = ({session}: {session: Session}) => {
                 { event: 'INSERT', schema: 'public', table: 'tasks' },
                 (payload) => {
                     const newTask = payload.new as Task;
-                    setTasks((previousTasks) => [...previousTasks, newTask]);
+                    setTasks((previousTasks) =>
+                        previousTasks.some((task) => task.id === newTask.id)
+                            ? previousTasks
+                            : [...previousTasks, newTask]
+                    );
                 }
             )
             .subscribe((status) => {
@@ -123,7 +127,7 @@ const TaskManager = ({session}: {session: Session}) => {
 
         <>
 
-            <div className='bg-gray-700 h-screen vw-screen text-white flex flex-col items-center'>
+            <div className='bg-gray-700 min-h-screen w-full text-white flex flex-col items-center'>
                 <div>
                     <h2 className='text-3xl font-bold mb-4'>Task Manager CRUD</h2>
 
@@ -150,7 +154,7 @@ const TaskManager = ({session}: {session: Session}) => {
                     </form>
 
                     {/* lists of tasks */}
-                    <ul>
+                    <ul className='mb-32'>
                         {tasks.map((task) => {
                             return (
                                 <li key={task.id} className="mb-4">
